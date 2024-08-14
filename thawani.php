@@ -154,7 +154,9 @@ function thawani_get_status($trx, $user)
     $response = Http::getData($url, $headers);
     $result = json_decode($response, true);
 
-    if ($result['data']['payment_status'] == 'paid') {
+    if ($trx['status'] == 2) {
+        r2(U . "order/view/" . $trx['id'], 'd', Lang::T("Transaction has been paid."));
+    } elseif ($result['data']['payment_status'] == 'paid') {
         if (!Package::rechargeUser($user['id'], $trx['routers'], $trx['plan_id'], $trx['gateway'], 'Thawani')) {
             r2(U . "order/view/" . $trx['id'], 'd', Lang::T("Failed to activate your Package, try again later."));
         }
@@ -172,8 +174,6 @@ function thawani_get_status($trx, $user)
         $trx->status = 1;
         $trx->save();
         r2(U . "order/view/" . $trx['id'], 'd', Lang::T("Transaction expired."));
-    } elseif ($trx['status'] == 2) {
-        r2(U . "order/view/" . $trx['id'], 'd', Lang::T("Transaction has been paid."));
     } elseif ($result['data']['payment_status'] == 'cancelled') {
         $trx->pg_paid_response = json_encode($result);
         $trx->status = 4;
