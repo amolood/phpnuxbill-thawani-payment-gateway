@@ -1,0 +1,21 @@
+Changelog - Thawani Payment Gateway for PHPNuxBill
+==================================================
+
+2.0.0
+-----
+- Fix amount: convert OMR price to integer baisa (1 OMR = 1000 baisa). Earlier
+  versions could send the wrong amount.
+- Add minimum-amount guard (0.100 OMR).
+- Fix broken if/elseif nesting in the webhook callback so unpaid/cancelled
+  statuses are handled correctly.
+- Add null-safety on all Thawani API responses.
+- Stop overwriting the global $_app_stage when resolving the API URL.
+- Make payment processing idempotent (skip already-paid transactions).
+- De-duplicate config saving into a single helper.
+- Add version constant and metadata.
+- Restructure repository to the standard paymentgateway/ package layout.
+- Clearer settings page (URL placeholders, webhook URL, baisa note).
+
+1.0.0
+-----
+- Initial release.

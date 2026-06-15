@@ -1,0 +1,2 @@
+Thawani Payment Gateway for PHPNuxBill
+Licensed under the terms described in the LICENSE/README of this repository.

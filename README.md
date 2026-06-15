@@ -1,51 +1,101 @@
-## Thawani Payment Gateway Plugin for PHPNuxBill
+# Thawani Payment Gateway for PHPNuxBill
 
-This plugin integrates the Thawani payment gateway with PHPNuxBill, a billing system for Mikrotik. It allows you to accept payments via Thawani directly from your PHPNuxBill instance.
+Accept online payments through **[Thawani](https://thawani.om/)** (Oman) directly in [PHPNuxBill](https://github.com/hotspotbilling/phpnuxbill/). Customers are redirected to Thawani's secure hosted checkout, and their package is activated automatically once payment succeeds.
+
+---
 
 ## Features
 
-- Easy configuration of Thawani payment gateway settings.
-- Automatic redirection to the Thawani payment page.
-- Automatic handling of payment status updates and notifications.
-- Seamless integration with PHPNuxBill's order and package management.
+- Hosted Thawani checkout — customers pay on Thawani's secure page.
+- Automatic package activation on successful payment.
+- Live and Testing (UAT) modes, switchable from the settings page.
+- Server-verified payments — status is always re-checked against Thawani before a package is granted (both on return and via webhook).
+- Idempotent processing — a paid transaction is never double-activated.
+- Correct currency handling — OMR prices are converted to baisa (1 OMR = 1000 baisa) with a minimum-amount guard.
+
+---
+
+## Requirements
+
+| Requirement | Notes |
+|-------------|-------|
+| PHPNuxBill | Latest recommended |
+| PHP | 8.0+ |
+| Thawani merchant account | Get API keys from [merchant.thawani.om](https://merchant.thawani.om/) |
+
+---
 
 ## Installation
-- Copy `thawani.php` to the `system/paymentgateway/` directory of your PHPNuxBill installation.
-- Copy `ui/thawani.tpl` to the `system/paymentgateway/ui/` directory.
-- 
+
+### Option 1 — Plugin Manager (recommended)
+
+1. PHPNuxBill admin → **Plugin Manager** (`/index.php?_route=pluginmanager`)
+2. Paste the repo URL and click **Install**:
+   `https://github.com/amolood/phpnuxbill-thawani-payment-gateway`
+
+### Option 2 — Manual
+
+Copy the contents of the `paymentgateway/` folder:
+
+```
+paymentgateway/thawani.php     →  system/paymentgateway/thawani.php
+paymentgateway/ui/thawani.tpl  →  system/paymentgateway/ui/thawani.tpl
+```
+
+---
+
 ## Configuration
 
-1. **Access the Configuration Page**
+Go to **Payment Gateway → Thawani** and set:
 
-   Go to the PHPNuxBill admin panel and navigate to `Payment Gateways > Thawani`.
+| Field | Value |
+|-------|-------|
+| Stage | `Live` or `Testing` |
+| Publishable Key | from your Thawani merchant dashboard |
+| Secret Key | from your Thawani merchant dashboard |
+| Live URL | `https://checkout.thawani.om/api/v1` |
+| Testing URL | `https://uatcheckout.thawani.om/api/v1` |
 
-2. **Enter Your Thawani API Keys**
+Then add Thawani to your Mikrotik hotspot **walled garden** so unauthenticated users can reach the payment page:
 
-   Enter your Thawani Publishable Key and Secret Key. These keys can be obtained from your [Thawani account](https://merchant.thawani.om/).
+```
+/ip hotspot walled-garden
+add dst-host=thawani.om
+add dst-host=*.thawani.om
+```
 
-3. **Save the Configuration**
+> 💡 **Always run one Testing transaction before going Live** to confirm the amount and flow.
 
-   Save the configuration settings.
+---
 
-## Usage
+## How it works
 
-1. **Create a Transaction**
+1. A customer orders a package and chooses Thawani → a checkout session is created and they are redirected to Thawani.
+2. After paying (or cancelling), Thawani redirects them back to PHPNuxBill.
+3. PHPNuxBill **re-queries Thawani** for the authoritative payment status; if `paid`, the package is activated.
+4. If webhooks are enabled, Thawani also notifies the gateway server-to-server, which likewise re-verifies before activating.
 
-   When a user places an order, a transaction will be created and the user will be redirected to the Thawani payment page and it will be redirected to phpnuxbill after payment is successful or failed or even canceled.
+### A note on amounts
+PHPNuxBill stores prices in OMR. Thawani's API works in **baisa** (1 OMR = 1000 baisa), so the gateway multiplies the price by 1000 and sends an integer amount. The minimum accepted charge is **0.100 OMR**.
 
-2. **Payment Notification**
-
-   Thawani will send payment status notifications to the plugin, which will automatically update the transaction status in PHPNuxBill.
-
+---
 
 ## Screenshots
 
-### Screenshot 1
-![Screenshot 1](https://raw.githubusercontent.com/amolood/phpnuxbill-thawani-payment-gateway/main/2.png)
+**Settings page**
 
-### Screenshot 2
-![Screenshot 2](https://raw.githubusercontent.com/amolood/phpnuxbill-thawani-payment-gateway/main/3.png)
+![Settings](2.png)
 
-### Screenshot 3
-![Screenshot 3](https://raw.githubusercontent.com/amolood/phpnuxbill-thawani-payment-gateway/main/4.png)
+**Checkout**
 
+![Checkout](3.png)
+
+**Order / payment result**
+
+![Result](4.png)
+
+---
+
+## License
+
+See the repository's license terms.

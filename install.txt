@@ -1,0 +1,32 @@
+Thawani Payment Gateway for PHPNuxBill
+======================================
+
+AUTOMATIC INSTALLATION (recommended)
+------------------------------------
+1. PHPNuxBill admin -> Plugin Manager:
+   https://your-domain/index.php?_route=pluginmanager
+2. Paste the repository URL and click Install:
+   https://github.com/amolood/phpnuxbill-thawani-payment-gateway
+
+MANUAL INSTALLATION
+-------------------
+Copy the contents of the paymentgateway/ folder:
+
+   paymentgateway/thawani.php      ->  system/paymentgateway/thawani.php
+   paymentgateway/ui/thawani.tpl   ->  system/paymentgateway/ui/thawani.tpl
+
+CONFIGURATION
+-------------
+Admin -> Payment Gateway -> Thawani. Enter:
+  - Stage:           Live or Testing
+  - Publishable Key  (from merchant.thawani.om)
+  - Secret Key       (from merchant.thawani.om)
+  - Live URL:        https://checkout.thawani.om/api/v1
+  - Testing URL:     https://uatcheckout.thawani.om/api/v1
+
+NOTES
+-----
+- Amounts: PHPNuxBill prices are in OMR; the gateway converts to baisa
+  (1 OMR = 1000 baisa) for Thawani. Minimum charge is 0.100 OMR.
+- Add thawani.om to the Mikrotik hotspot walled garden (see the settings page).
+- Always run one Testing transaction before going Live.

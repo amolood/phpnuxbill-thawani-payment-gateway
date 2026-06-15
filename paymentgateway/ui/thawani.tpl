@@ -37,7 +37,9 @@
                         <label class="col-md-2 control-label">Thawani live url</label>
                         <div class="col-md-6">
                             <input type="text" class="form-control" id="thawani_live_url" name="thawani_live_url"
+                                   placeholder="https://checkout.thawani.om/api/v1"
                                    value="{$_c['thawani_live_url']}">
+                            <small class="form-text text-muted">Production API base, e.g. https://checkout.thawani.om/api/v1</small>
                         </div>
                     </div>
 
@@ -45,7 +47,9 @@
                         <label class="col-md-2 control-label">Thawani testing url</label>
                         <div class="col-md-6">
                             <input type="text" class="form-control" id="thawani_testing_url" name="thawani_testing_url"
+                                   placeholder="https://uatcheckout.thawani.om/api/v1"
                                    value="{$_c['thawani_testing_url']}">
+                            <small class="form-text text-muted">UAT/sandbox API base, e.g. https://uatcheckout.thawani.om/api/v1</small>
                         </div>
                     </div>
 
@@ -54,11 +58,19 @@
                             <button class="btn btn-primary waves-effect waves-light" type="submit">Save</button>
                         </div>
                     </div>
+
+                    <label class="control-label">Webhook / Callback URL</label>
+                    <pre>{$app_url}/system/paymentgateway/thawani.php</pre>
+                    <small class="form-text text-muted">If you enable Thawani webhooks, point them here.</small>
+
+                    <label class="control-label" style="margin-top:10px">Mikrotik Walled Garden</label>
                     <pre>/ip hotspot walled-garden
 add dst-host=thawani.om
 add dst-host=*.thawani.om</pre>
-                    <small id="emailHelp" class="form-text text-muted">Set Telegram Bot to get any error and
-                        notification</small>
+                    <small class="form-text text-muted">
+                        Amounts are charged in Omani Rial; Thawani uses baisa internally (1 OMR = 1000 baisa).
+                        Set a Telegram bot in Settings to receive error notifications.
+                    </small>
                 </div>
             </div>
 
