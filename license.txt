@@ -1,2 +1,4 @@
 Thawani Payment Gateway for PHPNuxBill
-Licensed under the terms described in the LICENSE/README of this repository.
+
+Licensed under the GNU General Public License v3.0 (GPL-3.0).
+See the LICENSE file in this repository for the full license text.
